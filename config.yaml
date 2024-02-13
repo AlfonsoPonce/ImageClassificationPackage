@@ -1,0 +1,50 @@
+main:
+  #components_repository: "https://github.com/udacity/build-ml-pipeline-for-short-term-rental-prices#components"
+  # All the intermediate files will be copied to this directory at the end of the run.
+  # Set this to null if you are running in prod
+  project_name: ObjectDetectionSystem
+  experiment_name: DATAGATHER
+  steps: DATAGATHER
+
+PREPROCESSING:
+  class_list: goalkeeper,player,ball,referee
+
+  AUGMENTATIONS:
+    data_dir:
+    augmentations_file: RandomRain.yml
+    merge_augmented_images: True
+    artifact_name: augmentations
+    artifact_type: augmentations_result
+    artifact_description: Augmentation_file_used_And_result
+
+MODELING:
+  input_dir: C:\Users\fonso\Documents\sample_output\tiles\images
+  output_dir: ./model_output_tiled
+  model: fasterrcnn_resnet50
+  train_config:
+    train_split: 0.8
+    batch_size: 1
+    epochs: 20
+    pytorch:
+      optimizer:
+        name: SGD
+        params:
+          lr: 1e-5
+      scheduler:
+        name: CosineAnnealingWarmRestarts
+        params:
+          T_0: 50
+    tensorflow:
+      optimizer:
+        name: SGD
+        params:
+          learning_rate: 1e-5
+        scheduler:
+          name: CosineAnnealingWarmRestarts
+          params:
+            T_0: 50
+        loss_function: 'SparseCategoricalCrossentropy'
+
+  artifact_name: modeling
+  artifact_type: torch_model
+  artifact_description: Model_Produced
